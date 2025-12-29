@@ -50,6 +50,22 @@ class RuleEngine {
   }
 
   /**
+   * 删除企业版本规则
+   * @param {string} enterpriseId - 企业 ID
+   * @returns {Promise<boolean>}
+   */
+  async deleteVersionRule(enterpriseId) {
+    if (!enterpriseId) return false;
+
+    // 删除内存中的默认规则
+    delete this.defaultRules[enterpriseId];
+
+    // 删除缓存中的 version_tag 映射
+    const cacheKey = `enterprise:${enterpriseId}:version_tag`;
+    return await cacheService.delete(cacheKey);
+  }
+
+  /**
    * 批量设置规则
    * @param {Object} rules - 规则对象 { enterpriseId: versionTag }
    * @returns {Promise<void>}
